@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucky Draw</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs" defer></script>
+    <style>
+        .card, .modal-content {
+            border: none;
+        }
+        .submission-number {
+            padding-left: 0.25rem;
+            padding-right: 0.25rem;
+        }
+    </style>
+</head>
+<body class="bg-light" x-data="{ winnerModal: false }">
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand pl-4" href="#">Lucky Draw</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mt-4 pb-5">
+        <!-- Lucky Draw Number -->
+        <div class="card text-center mb-4 bg-light">
+            <div class="card-body">
+                <h2 class="card-title">Today's Result</h2>
+                <div class="display-2 text-primary" id="lucky-number">123</div>
+                <p class="mt-4"><span class="badge badge-success">Prize USD 100</span></p>
+                <p class="card-text mt-4">Next draw at 12 AM</p>
+            </div>
+        </div>
+
+        <!-- User Submissions -->
+        <div class="card mb-4 bg-light">
+            <div class="card-body">
+                <h2 class="card-title text-center">User Submissions</h2>
+                <div class="row no-gutters" id="submissions">
+                    <!-- Example submission -->
+                    <div class="col-3 col-md-1 submission-number">
+                        <div class="p-2 bg-info text-white text-center rounded">123</div>
+                    </div>
+                    <div class="col-3 col-md-1 submission-number">
+                        <div class="p-2 bg-info text-white text-center rounded">456</div>
+                    </div>
+                    <div class="col-3 col-md-1 submission-number">
+                        <div class="p-2 bg-info text-white text-center rounded">789</div>
+                    </div>
+                    <div class="col-3 col-md-1 submission-number">
+                        <div class="p-2 bg-info text-white text-center rounded">234</div>
+                    </div>
+                    <!-- More submissions will be loaded here -->
+                </div>
+                <div class="text-center mt-4">
+                    <button id="load-more" class="btn btn-primary">Load More</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advertising Column -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title text-center">Register your brand here</h2>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-3 mb-2">
+                        <img src="https://placehold.co/600x400" alt="Ad 1" class="img-fluid rounded">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3 mb-2">
+                        <img src="https://placehold.co/600x400" alt="Ad 2" class="img-fluid rounded">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3 mb-2">
+                        <img src="https://placehold.co/600x400" alt="Ad 3" class="img-fluid rounded">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3 mb-2">
+                        <img src="https://placehold.co/600x400" alt="Ad 4" class="img-fluid rounded">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Bar with Button -->
+    <div class="fixed-bottom bg-dark text-white text-center py-3">
+        <a href="winner-history.html" class="text-white mr-3">Winner</a>
+        <button id="open-form" class="btn btn-warning text-black">Submit Your Guess</button>
+    </div>
+
+    <!-- Form Modal -->
+    <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="formModalLabel">Submit Your Guess</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="guess-form">
+                        <div class="form-group">
+                            <label for="number">Your Guess (3 digits):</label>
+                            <input type="text" id="number" name="number" maxlength="3" class="form-control" placeholder="Enter your guess">
+                        </div>
+                        <div class="form-group">
+                            <label for="brand">Brand:</label>
+                            <input type="text" id="brand" name="brand" class="form-control" placeholder="Enter the brand">
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Username:</label>
+                            <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Winner Modal -->
+    <div class="modal fade" id="winnerModal" tabindex="-1" aria-labelledby="winnerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="winnerModalLabel">Winner History</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Example Row with a Winner -->
+                        <div class="col-12 mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span>Date: 2024-06-28</span>
+                                <span>Winning Number: 123</span>
+                                <span>Winner: user123</span>
+                            </div>
+                        </div>
+                        <!-- Example Row with Multiple Winners -->
+                        <div class="col-12 mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span>Date: 2024-06-27</span>
+                                <span>Winning Number: 456</span>
+                                <span>Winners: user456, user789</span>
+                            </div>
+                        </div>
+                        <!-- Example Row with No Winner -->
+                        <div class="col-12 mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span>Date: 2024-06-26</span>
+                                <span>Winning Number: 789</span>
+                                <span><span class="badge badge-secondary">No winner</span></span>
+                            </div>
+                        </div>
+                        <!-- Repeat similar rows for each winner -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Example script to set the lucky number
+        document.getElementById('lucky-number').textContent = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+
+        // Script to handle form modal
+        document.getElementById('open-form').addEventListener('click', function() {
+            $('#formModal').modal('show');
+        });
+
+        // Script to handle load more functionality
+        document.getElementById('load-more').addEventListener('click', function() {
+            const submissions = document.getElementById('submissions');
+            for (let i = 0; i < 12; i++) {
+                const div = document.createElement('div');
+                div.className = 'col-3 col-md-1 submission-number';
+                div.innerHTML = '<div class="p-2 bg-info text-white text-center rounded">' + Math.floor(Math.random() * 1000).toString().padStart(3, '0') + '</div>';
+                submissions.appendChild(div);
+            }
+        });
+    </script>
+</body>
+</html>
