@@ -1,202 +1,332 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap"
+      rel="stylesheet"
+    />
     <title>Lucky Draw</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .card, .modal-content {
-            border: none;
+      body {
+        font-family: "Fraunces", serif;
+      }
+      @keyframes marquee {
+        0% {
+          transform: translateX(100%);
         }
-        .submission-number {
-            padding-left: 0.25rem;
-            padding-right: 0.25rem;
+        100% {
+          transform: translateX(-100%);
         }
+      }
+      .animate-marquee {
+        animation: marquee 20s linear infinite;
+      }
     </style>
-</head>
-<body class="bg-light" x-data="{ winnerModal: false }">
-    <!-- Header -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand pl-4" href="#">Lucky Draw</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
-                    </li>
-                </ul>
-            </div>
+  </head>
+  <body class="relative bg-blue-600">
+    <header
+      class="bg-slate-100/70 backdrop-blur w-[90%] md:w-[80%] mx-auto py-2 px-4 rounded-full sticky top-0 z-10 pt-2 px-6 mt-4 md:px-6 md:py-2 md:mt-4"
+    >
+      <div class="py-3 px-4 rounded-full flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-blue-600">Lucky Draw</h1>
+        <nav class="hidden md:flex space-x-6">
+          <a
+            href="home.html"
+            class="text-blue-600 font-medium text-lg px-3 py-2 rounded-full transition duration-300 hover:bg-white hover:text-blue-600"
+            >Home</a
+          >
+          <a
+            href="#"
+            class="text-blue-600 font-medium text-lg px-3 py-2 rounded-full transition duration-300 hover:bg-white hover:text-blue-600"
+            >Winner History</a
+          >
+        </nav>
+        <button
+          class="hidden md:flex bg-blue-600 py-3 px-5 rounded-full text-lg text-white hover:bg-blue-600/90"
+        >
+          Get Lucky
+        </button>
+        <div class="md:hidden">
+          <button id="menu-btn" class="text-blue-600 focus:outline-none">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16m-7 6h7"
+              />
+            </svg>
+          </button>
         </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="container mt-4 pb-5">
-        <!-- Lucky Draw Number -->
-        <div class="card text-center mb-4 bg-light">
-            <div class="card-body">
-                <h2 class="card-title">Today's Result</h2>
-                <div class="display-2 text-primary" id="lucky-number">123</div>
-                <p class="mt-4"><span class="badge badge-success">Prize USD 100</span></p>
-                <p class="card-text mt-4">Next draw at 12 AM</p>
-            </div>
+      </div>
+    </header>
+    <div
+      id="mobile-menu"
+      class="md:hidden bg-slate-100 rounded-3xl mx-6 mt-1 py-3 px-4"
+    >
+      <div class="p-2 flex flex-col gap-4">
+        <a
+          href="home.html"
+          class="block px-4 py-2 text-blue-600 text-lg rounded-md transition duration-300 hover:bg-blue-600 hover:text-white"
+          >Home</a
+        >
+        <a
+          href="#"
+          class="block px-4 py-2 text-blue-600 text-lg rounded-md transition duration-300 hover:bg-blue-600 hover:text-white"
+          >Winner History</a
+        >
+        <div class="">
+          <button
+            class="px-4 py-2 bg-blue-600 bg-blue-600 py-3 px-5 rounded-full text-lg text-white hover:bg-blue-600/90"
+          >
+            Get Lucky
+          </button>
         </div>
-
-        <!-- User Submissions -->
-        <div class="card mb-4 bg-light">
-            <div class="card-body">
-                <h2 class="card-title text-center">User Submissions</h2>
-                <div class="row no-gutters" id="submissions">
-                    <!-- Example submission -->
-                    <div class="col-3 col-md-1 submission-number">
-                        <div class="p-2 bg-info text-white text-center rounded">123</div>
-                    </div>
-                    <div class="col-3 col-md-1 submission-number">
-                        <div class="p-2 bg-info text-white text-center rounded">456</div>
-                    </div>
-                    <div class="col-3 col-md-1 submission-number">
-                        <div class="p-2 bg-info text-white text-center rounded">789</div>
-                    </div>
-                    <div class="col-3 col-md-1 submission-number">
-                        <div class="p-2 bg-info text-white text-center rounded">234</div>
-                    </div>
-                    <!-- More submissions will be loaded here -->
-                </div>
-                <div class="text-center mt-4">
-                    <button id="load-more" class="btn btn-primary">Load More</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Advertising Column -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h2 class="card-title text-center">Register your brand here</h2>
-                <div class="row">
-                    <div class="col-12 col-md-6 col-lg-3 mb-2">
-                        <img src="https://placehold.co/600x400" alt="Ad 1" class="img-fluid rounded">
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3 mb-2">
-                        <img src="https://placehold.co/600x400" alt="Ad 2" class="img-fluid rounded">
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3 mb-2">
-                        <img src="https://placehold.co/600x400" alt="Ad 3" class="img-fluid rounded">
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3 mb-2">
-                        <img src="https://placehold.co/600x400" alt="Ad 4" class="img-fluid rounded">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Bottom Bar with Button -->
-    <div class="fixed-bottom bg-dark text-white text-center py-3">
-        <a href="winner-history.html" class="text-white mr-3">Winner</a>
-        <button id="open-form" class="btn btn-warning text-black">Submit Your Guess</button>
+      </div>
     </div>
-
-    <!-- Form Modal -->
-    <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="formModalLabel">Submit Your Guess</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="guess-form">
-                        <div class="form-group">
-                            <label for="number">Your Guess (3 digits):</label>
-                            <input type="text" id="number" name="number" maxlength="3" class="form-control" placeholder="Enter your guess">
-                        </div>
-                        <div class="form-group">
-                            <label for="brand">Brand:</label>
-                            <input type="text" id="brand" name="brand" class="form-control" placeholder="Enter the brand">
-                        </div>
-                        <div class="form-group">
-                            <label for="username">Username:</label>
-                            <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-            </div>
+    <section class="flex flex-col items-center justify-center h-[88vh] mx-auto">
+      <h1 class="text-6xl font-bold text-slate-100 pb-6 w-full text-center">
+        Try Your Luck Now!
+      </h1>
+      <div class="w-[80%] md:w-[60%] mx-auto pb-12">
+        <p class="text-slate-100 text-xl font-semibold text-center">
+          Get ready to be dazzled by today's lucky number! Submit your lucky
+          number and join the excitement.
+        </p>
+      </div>
+      <button
+        class="bg-transparent px-8 py-4 font-semibold text-white text-lg border-white border rounded-full transition-all hover:bg-white hover:text-blue-600"
+      >
+        Get Lucky
+      </button>
+    </section>
+    <!-- Register Brands -->
+    <section
+      class="bg-slate-100 max-w-screen-2xl px-[2.45rem] mx-auto py-12 w-full"
+    >
+      <div class="flex flex-col items-center gap-3">
+        <h2 class="text-3xl font-bold text-slate-700 text-center">
+          Register Your Brand
+        </h2>
+        <p class="text-xl font-medium text-slate-600 text-center">
+          Participate to be listed down here like our previous winners!
+        </p>
+      </div>
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-4 my-12">
+        <div
+          class="w-full h-[150px] bg-blue-500 text-white text-xl flex items-center justify-center rounded-md"
+        >
+          Brand 1
         </div>
-    </div>
-
-    <!-- Winner Modal -->
-    <div class="modal fade" id="winnerModal" tabindex="-1" aria-labelledby="winnerModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="winnerModalLabel">Winner History</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <!-- Example Row with a Winner -->
-                        <div class="col-12 mb-2">
-                            <div class="d-flex justify-content-between">
-                                <span>Date: 2024-06-28</span>
-                                <span>Winning Number: 123</span>
-                                <span>Winner: user123</span>
-                            </div>
-                        </div>
-                        <!-- Example Row with Multiple Winners -->
-                        <div class="col-12 mb-2">
-                            <div class="d-flex justify-content-between">
-                                <span>Date: 2024-06-27</span>
-                                <span>Winning Number: 456</span>
-                                <span>Winners: user456, user789</span>
-                            </div>
-                        </div>
-                        <!-- Example Row with No Winner -->
-                        <div class="col-12 mb-2">
-                            <div class="d-flex justify-content-between">
-                                <span>Date: 2024-06-26</span>
-                                <span>Winning Number: 789</span>
-                                <span><span class="badge badge-secondary">No winner</span></span>
-                            </div>
-                        </div>
-                        <!-- Repeat similar rows for each winner -->
-                    </div>
-                </div>
-            </div>
+        <div
+          class="w-full h-[150px] bg-yellow-500 text-white text-xl flex items-center justify-center rounded-md"
+        >
+          Brand 2
         </div>
-    </div>
+        <div
+          class="w-full h-[150px] bg-red-500 text-white text-xl flex items-center justify-center rounded-md"
+        >
+          Brand 3
+        </div>
+        <div
+          class="w-full h-[150px] bg-green-500 text-white text-xl flex items-center justify-center rounded-md"
+        >
+          Brand 4
+        </div>
+      </div>
+    </section>
+    <!-- Price -->
+    <section class="p-6 flex flex-col items-center justify-center gap-1">
+      <div class="flex flex-col gap-2 items-center">
+        <h3 class="text-4xl text-slate-100 font-bold text-center">
+          Price Money
+        </h3>
+        <p class="font-medium text-lg text-slate-200 text-center">
+          Today's Price Money
+        </p>
+      </div>
+      <div class="w-full p-4">
+        <div
+          class="bg-green-600 p-4 rounded-sm text-white text-2xl text-center"
+        >
+          <div class="border-2 border-slate-200 py-4 text-center">
+            Price USD 100
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Submit Entry -->
+    <section
+      class="bg-fixed bg-cover bg-center bg-cover bg-center h-screen"
+      style="
+        background-image: url('https://images.pexels.com/photos/1329295/pexels-photo-1329295.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+      "
+    >
+      <div
+        class="h-full flex items-center justify-center bg-black bg-opacity-10"
+      >
+        <div
+          class="bg-yellow-400/90 flex flex-col gap-4 items-center justify-center p-14 rounded-2xl"
+        >
+          <h1 class="text-white text-6xl md:text-7xl font-bold text-center">
+            Feeling Lucky?
+          </h1>
+          <p class="pt-4 py-12 text-white text-4xl font-semibold text-center">
+            Submit Your Number Now!
+          </p>
+          <button
+            class="bg-slate-100/20 px-8 py-4 font-semibold text-white text-xl border-white border rounded-full transition-all hover:bg-white hover:text-yellow-400"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </section>
 
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Todays Number reveled -->
+    <section
+      class="relative overflow-hidden border-yellow-500 border-t border-b bg-yellow-500"
+    >
+      <div
+        class="py-12 px-2 text-5xl font-semibold text-white whitespace-nowrap animate-marquee"
+      >
+        Today's Lucky Number Revealed! * Submit Your Entry Now! * Today's Lucky
+        Number Revealed! * Submit Your Entry Now! * Today's Lucky Number
+        Revealed!
+      </div>
+    </section>
+    <!-- User submitted numbers -->
+    <section class="bg-slate-100 flex flex-col gap-4 py-12">
+      <div class="flex flex-col gap-2 items-center">
+        <h2 class="text-3xl font-bold">Submitted Entries</h2>
+        <p class="text-lg font-semibold text-slate-800">
+          Already Entered Entries From Our User's
+        </p>
+      </div>
+      <div
+        class="py-8 px-12 grid grid-cols-2 md:grid-cols-5 gap-8 justify-items-center"
+      >
+        <div
+          class="bg-blue-500 h-[50px] w-[150px] flex items-center justify-center rounded-sm"
+        >
+          <p class="text-white text-2xl">234</p>
+        </div>
+        <div
+          class="bg-blue-500 h-[50px] w-[150px] flex items-center justify-center rounded-sm"
+        >
+          <p class="text-white text-2xl">490</p>
+        </div>
+        <div
+          class="bg-blue-500 h-[50px] w-[150px] flex items-center justify-center rounded-sm"
+        >
+          <p class="text-white text-2xl">876</p>
+        </div>
+        <div
+          class="bg-blue-500 h-[50px] w-[150px] flex items-center justify-center rounded-sm"
+        >
+          <p class="text-white text-2xl">999</p>
+        </div>
+        <div
+          class="bg-blue-500 h-[50px] w-[150px] flex items-center justify-center rounded-sm"
+        >
+          <p class="text-white text-2xl">999</p>
+        </div>
+        <div
+          class="bg-blue-500 h-[50px] w-[150px] flex items-center justify-center rounded-sm"
+        >
+          <p class="text-white text-2xl">567</p>
+        </div>
+        <div
+          class="bg-blue-500 h-[50px] w-[150px] flex items-center justify-center rounded-sm"
+        >
+          <p class="text-white text-2xl">121</p>
+        </div>
+        <div
+          class="bg-blue-500 h-[50px] w-[150px] flex items-center justify-center rounded-sm"
+        >
+          <p class="text-white text-2xl">111</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ's -->
+    <section
+      class="max-w-screen-2xl mx-auto px-[2.45rem] py-12 flex flex-col gap-12"
+    >
+      <div class="flex flex-col gap-4 items-center">
+        <h2 class="text-3xl font-bold text-slate-100">FAQ's</h2>
+      </div>
+      <div class="flex flex-col gap-8 w-[90%] md:w-[70%] mx-auto">
+        <div class="flex flex-col gap-4 bg-slate-100 rounded-xl p-6">
+          <div class="text-slate-700 text-2xl">How to Participate?</div>
+          <div class="text-slate-900 text-lg">
+            Simply submit your lucky number!
+          </div>
+        </div>
+        <div class="flex flex-col gap-4 bg-slate-100 rounded-xl p-6">
+          <div class="text-slate-700 text-2xl">When is the Next Draw?</div>
+          <div class="text-slate-900 text-lg">
+            The next draw kicks off at midnight!
+          </div>
+        </div>
+        <div class="flex flex-col gap-4 bg-slate-100 rounded-xl p-6">
+          <div class="text-slate-700 text-2xl">How are Winners Chosen?</div>
+          <div class="text-slate-900 text-lg">
+            Winners are randomly selected!
+          </div>
+        </div>
+        <div class="flex flex-col gap-4 bg-slate-100 rounded-xl p-6">
+          <div class="text-slate-700 text-2xl">
+            Can I Submit Multiple Numbers?
+          </div>
+          <div class="text-slate-900 text-lg">One lucky number per user!</div>
+        </div>
+        <div class="flex flex-col gap-4 bg-slate-100 rounded-xl p-6">
+          <div class="text-slate-700 text-2xl">How to Claim Prizes?</div>
+          <div class="text-slate-900 text-lg">
+            Prizes are automatically credited to winners' accounts!
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer
+      class="bg-slate-800 max-w-screen-2xl mx-auto mt-8 px-[2.45rem] py-8 flex flex-col gap-12 items-center"
+    >
+      <ul class="text-white grid grid-cols-2 md:grid-cols-4 gap-12">
+        <li class="text-xl">Home</li>
+        <li class="text-xl">Winners</li>
+        <li class="text-xl">About</li>
+        <li class="text-xl">Contact</li>
+      </ul>
+      <p class="text-white text-md">Copyright &copy; 2024 Lucky Draw</p>
+    </footer>
+
     <script>
-        // Example script to set the lucky number
-        document.getElementById('lucky-number').textContent = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-
-        // Script to handle form modal
-        document.getElementById('open-form').addEventListener('click', function() {
-            $('#formModal').modal('show');
+      document
+        .getElementById("menu-btn")
+        .addEventListener("click", function () {
+          var mobileMenu = document.getElementById("mobile-menu");
+          if (mobileMenu.classList.contains("hidden")) {
+            mobileMenu.classList.remove("hidden");
+          } else {
+            mobileMenu.classList.add("hidden");
+          }
         });
 
-        // Script to handle load more functionality
-        document.getElementById('load-more').addEventListener('click', function() {
-            const submissions = document.getElementById('submissions');
-            for (let i = 0; i < 12; i++) {
-                const div = document.createElement('div');
-                div.className = 'col-3 col-md-1 submission-number';
-                div.innerHTML = '<div class="p-2 bg-info text-white text-center rounded">' + Math.floor(Math.random() * 1000).toString().padStart(3, '0') + '</div>';
-                submissions.appendChild(div);
-            }
-        });
+      const numbers = [234, 567, 891, 123, 456, 789, 101, 112];
     </script>
-</body>
+  </body>
 </html>
